@@ -157,6 +157,10 @@ DCSREAS, RFSTDTC, RFENDT, RFENDTC, HEIGHTBL
 
 and you use the order_cols() from the metatools package on this dataset, what sequence would these variables appear from left to right?
 
+```{r}
+order_cols(adsl, metacore)
+```
+
 
 ## Question 6
 xportr was created to help get your xpt files ready for transport either to a clinical data set validator application or to a regulatory agency. This package has the functionality to associate metadata information to a local R data frame, perform data set level validation checks and convert into a transport v5 file(xpt).

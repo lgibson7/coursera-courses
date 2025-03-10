@@ -1,0 +1,160 @@
+---
+title: "module-5-quiz"
+format: html
+---
+
+
+## Question 1
+As you went through the OCCDS training, generating ADAE, let’s go back to the function on deriving the treatment-emergent flag (see function below).
+
+```{r}
+#admiral::derive_var_trtemfl()
+
+#as used in the training
+%>%
+  ## Derive treatment emergent flag ----
+derive_var_trtemfl(
+  trt_start_date = TRTSDT,
+  trt_end_date = NULL,
+  end_window = NULL
+)
+
+```
+
+Using the adae_course_quiz.r code, of those who are flagged as Treatment-Emergent (ADAE$TRTEMFL = ‘Y’), irregardless of an end window, can you identify the Subject ID (USUBJID) and the Adverse Event (AEDECOD) that has the biggest difference between AE Start Date and Treatment End Date?
+
+NOTE : To answer these following questions, you may reference the Resources available to you (.r scripts and Pinnacle 21 ADaM specifications) in the 'Reading' Section during this Module Review.
+
+## Question 3
+Create a new program called adae_train.r and copy in all of the code below, to read in the ADaM dataset ADAE from the package {pharmaverseadam}. This will set a new [adae] dataset in your global environment (you'll know as this dataset will have more variables than what you originally generated in the trainings).
+
+NOTE : To answer these following questions, you may reference the Resources available to you (.r scripts and Pinnacle 21 ADaM specifications) in the 'Reading' Section during this Module Review.
+
+Read in ADAE from the pharmaverseadam package.
+
+```{r}
+#install.packages("pharmaverseadam")
+library(pharmaverseadam)
+data("adae") #reads in the dataset ADAE from the pharmaverseadam
+```
+
+Then read in the [adae.xpt] you generated using the adae_course_quiz.r code and set it to [adae_train].
+
+```{r}
+library(haven)
+adae_train <- read_xpt("~/[include your absolute path to your dataset here]/adae.xpt") 
+```
+
+and run a comparison between the two datasets using the function diffdf::diffdf().
+ 
+```{r}
+install.packages(diffdf)
+library(diffdf)
+diffdf(base = adae, 
+       compare = adae_train, 
+       keys = c("USUBJID","AETERM","ASTDT","AESEQ"))
+```
+
+Some variables are shown to be <NA> in the base dataset [adae], whereas the compare dataset [adae_train] shows SAS blank values. In order to remove these discrepancies from this summary, which function from the {admiral} package can you use to convert these SAS blanks to <NA>? 
+
+(HINT : Apply this {admiral} function when you set [adae_train] from [adae.xpt]. Then rerun the diffdf() comparison again to confirm it worked).
+
+## Question 4
+After rerunning the diffdf() summary in the prior question, the <NA> vs SAS blanks discrepancies should now be gone, but it seems there are 4 records where TRTEMFL are still discrepant. It turns out that it should be a window of 30 days after treatment end-date. Update the derivation for TRTEMFL with this window, then rerun the comparison again to confirm these 4 discrepant records are now resolved. Which code resolved the issue?
+
+NOTE : To answer these following questions, you may reference the Resources available to you (.r scripts and Pinnacle 21 ADaM specifications) in the 'Reading' Section during this Module Review.
+
+
+### A
+```{r}
+derive_var_trtemfl(
+    trt_start_date = ASTDTM,
+    trt_end_date = AENDTM,
+    end_window = 30
+)
+```
+
+### B
+```{r}
+derive_var_trtemfl(
+    trt_start_date = TRTSDT,
+    trt_end_date = TRTEDT,
+    end_window = 30
+)
+```
+
+
+### C
+```{r}
+derive_var_aoccfl(
+    trt_start_date = TRTSDT,
+    trt_end_date = TRTEDT,
+    end_window = 30
+)
+```
+
+
+### D
+```{r}
+derive_var_trtemfl(
+    trt_start_date = TRTSDT,
+    trt_end_date = NULL,
+    end_window = 30
+)
+```
+
+
+## Question 5
+The analysis duration derive_vars_duration()  currently has 'out_unit = 'DAYS''. Change the duration to output in 'HOURS' instead. 
+
+(NOTE : in_unit should still be set to 'days'. You may receive an error mentioning an issue with controlled terminology, where you may have to update the codelist in the specs first, read in the analysis specifications again to fix the error in order to move on to the next question.)
+
+```{r}
+# Error: The following variables contained values not found in the control terminology
+# Variable (Prohibited Value(s))
+# ADURU ('HOURS')
+```
+
+What is the analysis duration for subject 
+
+01-716-1447's 'CHEST PAIN'?
+
+NOTE : To answer these following questions, you may reference the Resources available to you (.r scripts and Pinnacle 21 ADaM specifications) in the 'Reading' Section during this Module Review.
+
+## Question 6
+Recall the code to add the Custom Query AE Group Terms in the intermediate dataset ADAG. As we did in the training this code creates the new AE Group Term variables CQ07 and CQ08. 
+
+Update the code adag_course_quiz.r to create a new Custom Query 9 (e.g CQ09) with a group name called 'VIRAL EVENTS' for the AETERMs : 
+
+COUGH, FATIGUE, HYPERHIDROSIS, & NASOPHARYNGITIS. How many unique subjects are flagged for these 'VIRAL EVENTS' in ADAE? 
+
+NOTE : To answer these following questions, you may reference the Resources available to you (.r scripts and Pinnacle 21 ADaM specifications) in the 'Reading' Section during this Module Review.
+
+##
+
+##
+
+##
+
+##
+
+##
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
